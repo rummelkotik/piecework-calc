@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worklog Pro</title>
+    <!-- Chart.js для отрисовки графиков -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=2000">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Боковая панель (Sidebar) -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-layer-group brand-icon"></i>
+                <span>Worklog <strong>Pro</strong></span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-link active"><i class="fa-solid fa-chart-pie"></i> Дашборд</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-list-check"></i> Записи</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-briefcase"></i> Клиенты / Проекты</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-tags"></i> Услуги и цены</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-chart-line"></i> Отчёты</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-gear"></i> Настройки</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link"><i class="fa-solid fa-circle-question"></i> Помощь</a>
+            </div>
+        </aside>
+
+        <!-- Основная область контента -->
+        <main class="main-content">
+            <!-- Шапка панелей управления -->
+            <header class="top-header">
+                <h1 class="page-title">Панель управления</h1>
+                
+                <div class="header-controls">
+                    <div class="period-picker">
+                        <i class="fa-regular fa-calendar"></i>
+                        <input type="month" id="filter-month">
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-tab active">Месяц</button>
+                        <button class="btn btn-tab">6 месяцев</button>
+                        <button class="btn btn-tab">Год</button>
+                    </div>
+
+                    <button class="btn btn-export" onclick="exportToCSV()">
+                        <i class="fa-solid fa-file-csv"></i> Экспорт в CSV
+                    </button>
+                </div>
+            </header>
+
+            <!-- Сетка дашборда -->
+            <div class="dashboard-grid">
+                
+                <!-- Карточка 1: Сводка доходов -->
+                <div class="card summary-card">
+                    <div class="card-header">
+                        <h2>Сводка (за месяц)</h2>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <span class="metric-label">Валовый доход</span>
+                            <span class="metric-value" id="gross-sum">0 ₽</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-label">Налог (4%)</span>
+                            <span class="metric-value text-muted" id="tax-sum">0 ₽</span>
+                        </div>
+                        <div class="metric-box highlighted">
+                            <span class="metric-label">Чистый доход</span>
+                            <span class="metric-value text-accent" id="net-sum">0 ₽</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-label">В среднем в день</span>
+                            <span class="metric-value" id="avg-daily">0 ₽</span>
+                        </div>
+                    </div>
+
+                    <div class="vacation-widget">
+                        <div class="vacation-header">
+                            <span>Фонд отпуска (10%)</span>
+                            <strong id="vacation-sum">0 ₽</strong>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="vacation-progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточка 2: Аналитика (Графики) -->
+                <div class="card analytics-card">
+                    <div class="card-header">
+                        <h2>Аналитика доходов</h2>
+                        <div class="chart-toggle">
+                            <button class="btn-xs active">Мес</button>
+                            <button class="btn-xs">6 Мес</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="analyticsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Карточка 3: Быстрое добавление (Quick Add) -->
+                <div class="card quick-add-card">
+                    <div class="card-header">
+                        <h2>Быстрое добавление</h2>
+                        <i class="fa-solid fa-ellipsis text-muted"></i>
+                    </div>
+
+                    <form id="entry-form" class="quick-add-form">
+                        <div class="form-group">
+                            <label>Проект / Клиент</label>
+                            <input type="text" id="entry-project" placeholder="Например: МойПроект" value="МойПроект" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Услуга / Вид работы</label>
+                            <select id="entry-service" required>
+                                <option value="">Выберите услугу...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Количество</label>
+                                <input type="number" id="entry-qty" value="1" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Дата</label>
+                                <input type="date" id="entry-date" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-plus"></i> Добавить запись
+                        </button>
+                    </form>
+
+                    <!-- Форма управления прайсом -->
+                    <div class="pricing-mini-section">
+                        <details>
+                            <summary><i class="fa-solid fa-gear"></i> Управление услугами и ценами</summary>
+                            <form id="service-form" class="mini-form">
+                                <input type="text" id="service-name" placeholder="Название услуги" required>
+                                <input type="number" id="service-price" placeholder="Цена (₽)" required>
+                                <button type="submit" class="btn btn-secondary">Сохранить</button>
+                            </form>
+                            <div id="services-list" class="services-list-compact"></div>
+                        </details>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Таблица истории работ -->
+            <div class="card history-card">
+                <div class="table-header">
+                    <h2>История доходов и работ</h2>
+                    <div class="table-actions">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="table-search" placeholder="Поиск..." oninput="filterTable()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Дата <i class="fa-solid fa-arrow-down-short-wide"></i></th>
+                                <th>Проект</th>
+                                <th>Вид работы</th>
+                                <th>Ставка (₽)</th>
+                                <th>Кол-во</th>
+                                <th>Вал (₽)</th>
+                                <th>Налог (4%)</th>
+                                <th>Чистыми (₽)</th>
+                                <th style="text-align: right;">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="entries-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js?v=2000"></script>
+</body>
+</html>
