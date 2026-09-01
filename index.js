@@ -1,17 +1,13 @@
 const express = require('express');
-const Database = require('better-sqlite3');
 const cors = require('cors');
 const path = require('path');
+const Database = require('better-sqlite3');
 
 const app = express();
-const PORT = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-
-// Отдаем файлы строго из той папки, где лежит этот index.js, и из родительской
-app.use(express.static(__dirname));
-app.use(express.static(path.join(__dirname, '..')));
 
 const db = new Database('./database.sqlite');
 
@@ -19,55 +15,122 @@ db.exec(`
     CREATE TABLE IF NOT EXISTS services (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        price REAL NOT NULL
+        price REAL NOT NULL,
+        category TEXT
     );
-
     CREATE TABLE IF NOT EXISTS entries (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        project TEXT DEFAULT 'MyProject',
+        id TEXT PRIMARY KEY,
         date TEXT NOT NULL,
+        project TEXT,
         service_id INTEGER NOT NULL,
-        quantity INTEGER NOT NULL,
+        quantity REAL NOT NULL,
         FOREIGN KEY (service_id) REFERENCES services(id)
     );
 `);
 
-try { db.exec("ALTER TABLE entries ADD COLUMN project TEXT DEFAULT 'MyProject'"); } catch(e) {}
-
+// API для услуг
 app.get('/api/services', (req, res) => {
-    res.json(db.prepare('SELECT * FROM services').all());
+    const stmt = db.prepare('SELECT * FROM services');
+    res.json(stmt.all());
 });
 
 app.post('/api/services', (req, res) => {
-    const { name, price } = req.body;
-    const info = db.prepare('INSERT INTO services (name, price) VALUES (?, ?)').run(name, price);
-    res.json({ id: info.lastInsertRowid, name, price });
+    const { name, price, category } = req.body;
+    if (!name || price == null) return res.status(400).json({ error: 'Название и цена обязательны' });
+    const stmt = db.prepare('INSERT INTO services (name, price, category) VALUES (?, ?, ?)');
+    const info = stmt.run(name, parseFloat(price), category || '');
+    const newService = db.prepare('SELECT * FROM services WHERE id = ?').get(info.lastInsertRowid);
+    res.status(201).json(newService);
+});
+
+app.put('/api/services/:id', (req, res) => {
+    const { id } = req.params;
+    const { name, price, category } = req.body;
+    // Проверяем, что передан хоть какой-то параметр
+    if (name === undefined && price === undefined && category === undefined) {
+        return res.status(400).json({ error: 'Нет данных для обновления' });
+    }
+    // Собираем поля для обновления
+    let updates = [];
+    let values = [];
+    if (name !== undefined) {
+        updates.push('name = ?');
+        values.push(name);
+    }
+    if (price !== undefined) {
+        updates.push('price = ?');
+        values.push(parseFloat(price));
+    }
+    if (category !== undefined) {
+        updates.push('category = ?');
+        values.push(category);
+    }
+    values.push(id);
+    const stmt = db.prepare(`UPDATE services SET ${updates.join(', ')} WHERE id = ?`);
+    const info = stmt.run(...values);
+    if (info.changes === 0) {
+        return res.status(404).json({ error: 'Услуга не найдена' });
+    }
+    const updated = db.prepare('SELECT * FROM services WHERE id = ?').get(id);
+    res.json(updated);
 });
 
 app.delete('/api/services/:id', (req, res) => {
-    db.prepare('DELETE FROM services WHERE id = ?').run(req.params.id);
-    res.json({ success: true });
+    const { id } = req.params;
+    const stmt = db.prepare('DELETE FROM services WHERE id = ?');
+    const info = stmt.run(id);
+    if (info.changes === 0) return res.status(404).json({ error: 'Не найдено' });
+    res.json({ message: 'Удалено' });
 });
 
+// API для записей
 app.get('/api/entries', (req, res) => {
-    const query = `
-        SELECT entries.id, entries.project, entries.date, entries.quantity, services.name, services.price 
-        FROM entries 
-        JOIN services ON entries.service_id = services.id
-        ORDER BY entries.date DESC
-    `;
-    res.json(db.prepare(query).all());
+    const stmt = db.prepare('SELECT * FROM entries ORDER BY date DESC');
+    res.json(stmt.all());
 });
 
 app.post('/api/entries', (req, res) => {
-    const { project, date, service_id, quantity } = req.body;
-    const info = db.prepare('INSERT INTO entries (project, date, service_id, quantity) VALUES (?, ?, ?, ?)').run(project || 'MyProject', date, service_id, quantity);
-    res.json({ id: info.lastInsertRowid });
+    const { date, project, service_id, quantity } = req.body;
+    if (!date || !service_id || quantity == null) {
+        return res.status(400).json({ error: 'Не все поля' });
+    }
+    // Проверяем, существует ли услуга
+    const service = db.prepare('SELECT id FROM services WHERE id = ?').get(parseInt(service_id));
+    if (!service) {
+        return res.status(400).json({ error: 'Услуга с таким ID не найдена' });
+    }
+    const id = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+    const stmt = db.prepare('INSERT INTO entries (id, date, project, service_id, quantity) VALUES (?, ?, ?, ?, ?)');
+    stmt.run(id, date, project || '', parseInt(service_id), parseFloat(quantity));
+    res.status(201).json(db.prepare('SELECT * FROM entries WHERE id = ?').get(id));
+});
+
+app.put('/api/entries/:id', (req, res) => {
+    const { id } = req.params;
+    const { date, project, service_id, quantity } = req.body;
+    if (!date || !service_id || quantity == null) return res.status(400).json({ error: 'Не все поля' });
+    const stmt = db.prepare('UPDATE entries SET date = ?, project = ?, service_id = ?, quantity = ? WHERE id = ?');
+    const info = stmt.run(date, project || '', parseInt(service_id), parseFloat(quantity), id);
+    if (info.changes === 0) return res.status(404).json({ error: 'Не найдено' });
+    res.json(db.prepare('SELECT * FROM entries WHERE id = ?').get(id));
 });
 
 app.delete('/api/entries/:id', (req, res) => {
-    db.prepare('DELETE FROM entries WHERE id = ?').run(req.params.id);
-    res.json({ success: true });
+    const { id } = req.params;
+    const stmt = db.prepare('DELETE FROM entries WHERE id = ?');
+    const info = stmt.run(id);
+    if (info.changes === 0) return res.status(404).json({ error: 'Не найдено' });
+    res.json({ message: 'Удалено' });
 });
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+// Статика
+app.use(express.static(__dirname));
+
+// Все остальные маршруты — отдаём index.html (для SPA)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log(`🚀 Сервер запущен на порту ${port}`);
+});

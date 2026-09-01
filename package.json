@@ -11,6 +11,14 @@
   "dependencies": {
     "better-sqlite3": "^13.0.3",
     "cors": "^2.8.6",
-    "express": "^5.2.1"
-  }
+    "express": "^4.22.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rummelkotik/piecework-calc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rummelkotik/piecework-calc/issues"
+  },
+  "homepage": "https://github.com/rummelkotik/piecework-calc#readme"
 }
