@@ -28,7 +28,9 @@ body {
 
 #app {
     display: flex;
+    width: 100%;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* ===== Sidebar ===== */
@@ -138,7 +140,8 @@ body {
 .main-content { 
     flex: 1; 
     padding: 24px 28px; 
-    min-width: 0; 
+    min-width: 0;
+    overflow-x: hidden;
 }
 
 .tab-content { 
@@ -642,16 +645,6 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-    .dashboard-grid { 
-        grid-template-columns: 1fr; 
-    }
-    .top-cards-row { 
-        grid-template-columns: 1fr; 
-    }
-}
-
 /* Стили блока «Записи за день» */
 .day-entries {
     background: var(--bg-card);
@@ -721,20 +714,16 @@ input[type="number"] {
     cursor: pointer;
 }
 
-#app {
-    display: flex;
-    width: 100%;
-    min-height: 100vh;
-    overflow-x: hidden;
+/* Responsive & Mobile Adaptation */
+@media (max-width: 1024px) {
+    .dashboard-grid { 
+        grid-template-columns: 1fr; 
+    }
+    .top-cards-row { 
+        grid-template-columns: 1fr; 
+    }
 }
 
-.main-content {
-    flex: 1;
-    min-width: 0; /* Важно, чтобы flex-элементы не ломали сетку при сужении */
-    overflow-x: hidden;
-}
-
-/* Мобильная адаптация (экраны меньше 768px) */
 @media (max-width: 768px) {
     #app {
         flex-direction: column;
@@ -745,43 +734,78 @@ input[type="number"] {
         height: auto;
         position: relative;
         top: auto;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px;
         gap: 10px;
         border-right: none;
         border-bottom: 1px solid var(--border-card);
     }
 
     .logo {
-        margin-bottom: 0;
+        justify-content: center;
+        margin-bottom: 4px;
     }
 
     .tab-bar {
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: 6px;
+        width: 100%;
     }
 
     .tab-btn {
-        padding: 6px 10px;
+        justify-content: center;
+        padding: 8px 6px;
         font-size: 13px;
+        text-align: center;
     }
 
     .sidebar-bottom {
-        flex-direction: row;
-        margin-top: 0;
-        gap: 8px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        margin-top: 4px;
+        border-top: 1px solid var(--border-color);
+        padding-top: 8px;
     }
 
     .sidebar-icon-btn {
-        padding: 6px 8px;
+        text-align: center;
+        padding: 6px;
+        background: var(--bg-input);
+        border-radius: 4px;
         font-size: 12px;
     }
 
     .main-content {
-        padding: 16px;
+        padding: 12px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .header-controls {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .date-picker-btn {
+        justify-content: space-between;
+    }
+
+    .period-tabs {
+        display: flex;
+        width: 100%;
+    }
+
+    .p-tab {
+        flex: 1;
+        text-align: center;
     }
 
     .dashboard-grid {
