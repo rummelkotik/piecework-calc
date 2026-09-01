@@ -720,3 +720,75 @@ input[type="number"] {
     border-radius: 6px;
     cursor: pointer;
 }
+
+#app {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0; /* Важно, чтобы flex-элементы не ломали сетку при сужении */
+    overflow-x: hidden;
+}
+
+/* Мобильная адаптация (экраны меньше 768px) */
+@media (max-width: 768px) {
+    #app {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 10px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-card);
+    }
+
+    .logo {
+        margin-bottom: 0;
+    }
+
+    .tab-bar {
+        flex-direction: row;
+        gap: 6px;
+    }
+
+    .tab-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .sidebar-bottom {
+        flex-direction: row;
+        margin-top: 0;
+        gap: 8px;
+    }
+
+    .sidebar-icon-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .top-cards-row {
+        grid-template-columns: 1fr;
+    }
+}
