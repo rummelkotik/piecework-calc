@@ -725,6 +725,11 @@ input[type="number"] {
 }
 
 @media (max-width: 768px) {
+    html, body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
     #app {
         flex-direction: column;
     }
@@ -780,39 +785,51 @@ input[type="number"] {
 
     .main-content {
         padding: 12px;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     .dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
     }
 
     .header-controls {
-        width: 100%;
-        flex-direction: column;
-        gap: 8px;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 8px !important;
     }
 
     .date-picker-btn {
-        justify-content: space-between;
+        width: 100% !important;
+        justify-content: space-between !important;
     }
 
     .period-tabs {
-        display: flex;
-        width: 100%;
+        width: 100% !important;
+        display: flex !important;
     }
 
     .p-tab {
-        flex: 1;
-        text-align: center;
+        flex: 1 !important;
+        text-align: center !important;
     }
 
     .dashboard-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
     }
 
     .top-cards-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+    }
+
+    .summary-card-v2, .analytics-card-v2, .history-card-v2, 
+    .quick-add-card-v2, .calendar-section, .day-entries {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 }
