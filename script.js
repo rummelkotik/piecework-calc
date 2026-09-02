@@ -13,7 +13,7 @@ let barChartInstance = null;
 
 const API_ENTRIES = '/api/entries';
 const API_SERVICES = '/api/services';
-const TAX_RATE = 0.04; // Налог 4%
+const TAX_RATE = 0.13; // Налог 13%
 
 // ==========================================
 // 2. ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
@@ -110,7 +110,6 @@ function initDashboardEvents() {
         renderHistory();
     });
 
-    // Обработка кнопок выбора периода (День / Месяц / Год) на дашборде
     document.querySelectorAll('.dashboard-header .period-tabs .p-tab').forEach(tab => {
         tab.addEventListener('click', (e) => {
             document.querySelectorAll('.dashboard-header .period-tabs .p-tab').forEach(t => t.classList.remove('active'));
@@ -122,7 +121,6 @@ function initDashboardEvents() {
         });
     });
 
-    // Стрелки навигации периодов (влево / вправо)
     document.getElementById('prev-period')?.addEventListener('click', () => {
         shiftPeriod(-1);
     });
@@ -149,7 +147,7 @@ function shiftPeriod(direction) {
         const d = new Date(selectedDateStr);
         d.setDate(d.getDate() + direction);
         selectedDateStr = d.toISOString().split('T')[0];
-        currentDate = new Date(d); // синхронизация с календарём
+        currentDate = new Date(d);
     } else if (currentDashboardMode === 'month') {
         currentDate.setMonth(currentDate.getMonth() + direction);
     } else if (currentDashboardMode === 'year') {
@@ -289,7 +287,6 @@ function renderHistory() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
-    // 1. Фильтрация записей строго по выбранному периоду (День / Месяц / Год)
     let periodFiltered = entries.filter(e => {
         const d = new Date(e.date);
         if (currentDashboardMode === 'day') {
@@ -302,10 +299,8 @@ function renderHistory() {
         return true;
     });
 
-    // 2. Сортировка от новых к старым
     let sorted = [...periodFiltered].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // 3. Учет поискового запроса, если он введен
     if (query) {
         sorted = sorted.filter(e => {
             const s = services.find(ser => String(ser.id) === String(e.service_id));
@@ -314,7 +309,6 @@ function renderHistory() {
         });
     }
 
-    // 4. Ограничение вывода (если не нажата кнопка «Показать все», выводим максимум 8 строк)
     let display = showAllHistory ? sorted : sorted.slice(0, 8);
 
     if (display.length === 0) {
@@ -576,39 +570,36 @@ function renderCatalog() {
 
         const catBlock = document.createElement('div');
         catBlock.className = 'catalog-cat-block';
-        catBlock.style.cssText = 'background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; margin-bottom: 15px;';
         
         catBlock.innerHTML = `
-            <div class="cat-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-                <span class="cat-title text-purple" style="color: #a777e3; font-weight: bold; font-size: 17px;">${cat} (${catServices.length})</span>
-                <div class="cat-actions" style="display:flex; gap: 8px;">
+            <div class="cat-header">
+                <span class="cat-title">${cat} (${catServices.length})</span>
+                <div class="cat-actions">
                     <button class="icon-btn" onclick="renameCategory('${cat}')">✏️</button>
                     <button class="icon-btn" onclick="deleteCategory('${cat}')">🗑</button>
                 </div>
             </div>
-            <div class="cat-items-list" style="display:flex; flex-direction:column; gap: 8px;">
+            <div class="cat-items-list">
                 ${catServices.map(s => `
-                    <div class="catalog-card-item" data-id="${s.id}" style="display:flex; gap: 8px; align-items:center; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px;">
+                    <div class="catalog-card-item" data-id="${s.id}">
                         <input type="text" 
                                class="v2-input inline-name" 
                                value="${s.name}" 
-                               style="flex:1;"
                                onchange="updateServiceItem('${s.id}', 'name', this.value)">
-                        <div class="price-input-wrapper" style="display:flex; align-items:center; gap: 4px;">
+                        <div class="price-input-wrapper">
                             <input type="number" 
                                    class="v2-input inline-price" 
                                    value="${s.price}" 
-                                   style="width:90px; text-align:right; color:#43c6b8; font-weight:bold;"
                                    onchange="updateServiceItem('${s.id}', 'price', parseFloat(this.value) || 0)">
-                            <span class="currency" style="color:var(--text-muted); font-weight:bold;">₽</span>
+                            <span class="currency">₽</span>
                         </div>
                         <button class="icon-btn" onclick="deleteServiceItem('${s.id}')">🗑</button>
                     </div>
                 `).join('')}
-                <div class="add-item-inline" style="display:flex; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1);">
-                    <input type="text" placeholder="Название..." class="v2-input new-item-name" id="new-name-${cat}" style="flex:1;">
-                    <input type="number" placeholder="₽" class="v2-input new-item-price" id="new-price-${cat}" style="width:90px;">
-                    <button class="v2-primary-btn small" onclick="addPositionToCategory('${cat}')" style="padding: 0 15px;">+</button>
+                <div class="add-item-inline">
+                    <input type="text" placeholder="Название..." class="v2-input new-item-name" id="new-name-${cat}">
+                    <input type="number" placeholder="₽" class="v2-input new-item-price" id="new-price-${cat}">
+                    <button class="v2-primary-btn small-btn" onclick="addPositionToCategory('${cat}')">+</button>
                 </div>
             </div>
         `;
@@ -748,7 +739,7 @@ function populateCategoryDropdowns() {
 }
 
 // ==========================================
-// 8. ИМПОРТ И ЭКСПОРТ ДАННЫХ
+// 8. ИМПОРТ И ЭКСПОРТ ДАННЫХ (ИСПРАВЛЕНО)
 // ==========================================
 function initExportImportEvents() {
     document.getElementById('export-btn')?.addEventListener('click', () => {
@@ -770,21 +761,40 @@ function initExportImportEvents() {
         input.accept = 'application/json';
         input.onchange = e => {
             const file = e.target.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
             reader.readAsText(file, 'UTF-8');
             reader.onload = readerEvent => {
                 try {
                     const content = JSON.parse(readerEvent.target.result);
-                    if (content.services) currentServices = content.services;
-                    if (content.entries) entries = content.entries;
+                    
+                    // Проверка: если файл — это просто массив расценок (как rates_flat.json)
+                    if (Array.isArray(content)) {
+                        currentServices = content;
+                    } 
+                    // Если это полноценный объект бэкапа
+                    else if (content && typeof content === 'object') {
+                        if (content.services && Array.isArray(content.services)) {
+                            currentServices = content.services;
+                        }
+                        if (content.entries && Array.isArray(content.entries)) {
+                            entries = content.entries;
+                        }
+                    } else {
+                        throw new Error('Некорректный формат данных');
+                    }
+
                     saveLocalBackup();
                     renderCatalog();
                     populateCategoryDropdowns();
                     renderSummary();
                     renderHistory();
+                    renderCalendar(currentDate);
                     alert('Данные успешно импортированы!');
                 } catch (err) {
-                    alert('Ошибка при чтении файла');
+                    console.error('Ошибка импорта:', err);
+                    alert('Ошибка при чтении файла: убедитесь, что выбран корректный JSON-файл.');
                 }
             };
         };
