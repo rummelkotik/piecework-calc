@@ -580,8 +580,8 @@ body {
 }
 
 .catalog-cat-block {
-    background: #121d28;
-    border: 1px solid #1e3040;
+    background: var(--bg-input);
+    border: 1px solid var(--border-card);
     border-radius: 8px;
     padding: 14px;
     margin-bottom: 20px;
@@ -597,7 +597,7 @@ body {
 .cat-title {
     font-size: 19px;
     font-weight: bold;
-    color: #a777e3;
+    color: var(--accent-cyan);
 }
 
 .catalog-card-item {
@@ -605,7 +605,7 @@ body {
     align-items: center;
     gap: 8px;
     margin-bottom: 8px;
-    background: #182635;
+    background: var(--bg-card);
     padding: 8px;
     border-radius: 6px;
     flex-wrap: wrap;
@@ -627,9 +627,22 @@ body {
 .inline-price {
     width: 75px;
     text-align: right;
-    color: #43c6b8;
+    color: var(--accent-cyan);
     font-weight: bold;
     font-size: 14px;
+}
+
+.currency {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.add-item-inline {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-card);
 }
 
 input[type="number"]::-webkit-outer-spin-button,
