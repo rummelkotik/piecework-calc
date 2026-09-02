@@ -24,6 +24,7 @@ body {
     color: var(--text-main);
     min-height: 100vh;
     font-size: 14px;
+    overflow-x: hidden;
 }
 
 #app {
@@ -45,6 +46,7 @@ body {
     position: sticky;
     top: 0;
     height: 100vh;
+    flex-shrink: 0;
 }
 
 .logo { 
@@ -146,6 +148,7 @@ body {
 
 .tab-content { 
     display: none; 
+    width: 100%;
 }
 
 .tab-content.active { 
@@ -222,6 +225,7 @@ body {
     display: flex; 
     flex-direction: column; 
     gap: 20px; 
+    min-width: 0;
 }
 
 .top-cards-row { 
@@ -235,6 +239,7 @@ body {
     border: 1px solid var(--border-card);
     border-radius: 8px; 
     padding: 20px;
+    min-width: 0;
 }
 
 .summary-card-v2 h3, .analytics-header h3, .history-header h3, .quick-add-card-v2 h3, .day-entries h3 {
@@ -403,23 +408,18 @@ body {
     cursor: pointer; 
 }
 
-/* Table */
-.history-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-bottom: 14px; 
-}
-
-.history-actions { 
-    display: flex; 
-    gap: 8px; 
+/* Table container fix */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .v2-table { 
     width: 100%; 
     border-collapse: collapse; 
     font-size: 14px; 
+    white-space: nowrap;
 }
 
 .v2-table th { 
@@ -510,11 +510,6 @@ body {
     color: var(--danger);
 }
 
-.calendar-day:hover:not(.empty) { 
-    border-color: var(--accent-cyan); 
-    color: var(--accent-cyan); 
-}
-
 .calendar-day.selected { 
     background: var(--accent-cyan); 
     color: #081316 !important; 
@@ -554,8 +549,8 @@ body {
     -webkit-appearance: none;
     width: 20px;
     height: 20px;
-    background: var(--bg-card, #16202a);
-    border: 1px solid var(--border-color, #233446);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     cursor: pointer;
     display: inline-flex;
@@ -613,11 +608,13 @@ body {
     background: #182635;
     padding: 8px;
     border-radius: 6px;
+    flex-wrap: wrap;
 }
 
 .inline-name { 
     flex: 1; 
     font-size: 14px;
+    min-width: 140px;
 }
 
 .price-input-wrapper {
@@ -831,5 +828,19 @@ input[type="number"] {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
+    }
+
+    .search-input {
+        width: 100% !important;
+    }
+
+    .history-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .history-actions {
+        flex-direction: column;
     }
 }
