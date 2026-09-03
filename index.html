@@ -31,6 +31,10 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     Расценки
                 </button>
+                <button class="tab-btn" data-tab="monthly-summary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Итог за месяц
+                </button>
             </nav>
 
             <div class="sidebar-bottom">
@@ -78,8 +82,8 @@
                                         <span class="m-value small" id="dash-net">0.00 ₽</span>
                                     </div>
                                     <div>
-                                        <span class="m-label">Всего записей</span>
-                                        <span class="m-value small" id="dash-count">0</span>
+                                        <span class="m-label">Сумма контейнеров</span>
+                                        <span class="m-value small" id="dash-containers-sum">0.00 ₽</span>
                                     </div>
                                 </div>
                                 <div class="divider"></div>
@@ -136,46 +140,19 @@
                         </div>
                     </div>
 
+                    <!-- Правая колонка с круговой диаграммой цели -->
                     <div class="dashboard-right">
-                        <div class="quick-add-card-v2">
-                            <h3>Контейнеры</h3>
-                            <form id="quick-add-form">
-                                <div class="checkbox-group">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="container-type" value="контейнер на 3">
-                                        <span>Контейнер на 3</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="container-type" value="контейнер на 4">
-                                        <span>Контейнер на 4</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="container-type" value="контейнер с ограждениями">
-                                        <span>Контейнер с ограждениями</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="container-type" value="контейнер с баками на 3">
-                                        <span>Контейнер с баками на 3</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="container-type" value="контейнер с баками на 4">
-                                        <span>Контейнер с баками на 4</span>
-                                    </label>
-                                </div>
-
-                                <div class="form-row" style="margin-top: 15px;">
-                                    <div class="form-group">
-                                        <label>Кол-во</label>
-                                        <input type="number" class="v2-input" id="quick-qty" value="1" min="1" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Проект</label>
-                                        <input type="text" class="v2-input" id="quick-project" placeholder="Название">
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="v2-primary-btn" style="margin-top: 10px;">+ Добавить запись</button>
-                            </form>
+                        <div class="history-card-v2" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
+                            <h3 style="margin-top: 0; margin-bottom: 15px; width: 100%; text-align: left;">Цель по доходу</h3>
+                            
+                            <div style="position: relative; width: 180px; height: 180px; margin: 10px 0 15px 0;">
+                                <canvas id="goalChart"></canvas>
+                            </div>
+                            
+                            <div style="text-align: center; width: 100%;">
+                                <div id="goal-text-amount" style="font-size: 16px; font-weight: bold; color: var(--text-main, #fff);">0,00 ₽ / 100 000,00 ₽</div>
+                                <div id="goal-text-percent" style="font-size: 13px; color: var(--text-muted, #6b8a90); margin-top: 4px;">0% выполнено</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -242,6 +219,21 @@
                         <button type="button" id="add-single-work-btn" class="v2-primary-btn">+ Добавить запись</button>
                     </div>
 
+                    <!-- Блок быстрого выбора контейнеров -->
+                    <div class="quick-add-card-v2 add-form">
+                        <h3>Быстрый выбор контейнеров на выбранный день</h3>
+                        <div class="checkbox-group" id="containers-checkboxes-list">
+                            <!-- Рендерится через JS -->
+                        </div>
+                        <div class="form-row" style="align-items: center;">
+                            <div class="form-group" style="max-width: 120px;">
+                                <label>Кол-во</label>
+                                <input type="number" class="v2-input" id="container-work-qty" value="1" min="1">
+                            </div>
+                            <button type="button" id="add-containers-btn" class="v2-primary-btn" style="align-self: flex-end; height: 38px;">+ Добавить контейнеры</button>
+                        </div>
+                    </div>
+
                     <div class="day-entries">
                         <h3>Записи за день</h3>
                         <div id="day-entries-list"></div>
@@ -273,6 +265,91 @@
                     <div class="catalog-body" id="catalog-categories-container">
                         <!-- Динамически рендерятся категории с позициями -->
                     </div>
+                </div>
+            </section>
+
+            <!-- Вкладка 4: Итог за месяц -->
+            <section id="monthly-summary-tab" class="tab-content">
+                <div class="catalog-container">
+                    <div class="dashboard-header" style="margin-bottom: 20px;">
+                        <h2>Итог за месяц</h2>
+                        <div class="header-controls">
+                            <div class="date-picker-btn">
+                                <span class="arrows" id="ms-prev-month">◄</span>
+                                <span id="ms-period-label">Сентябрь 2026</span>
+                                <span class="arrows" id="ms-next-month">►</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Сводные карточки итогов месяца -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div class="summary-card-v2" style="padding: 15px;">
+                            <span class="m-label">Сумма за месяц</span>
+                            <span class="m-value" id="ms-total-gross" style="font-size: 20px; margin-top: 5px;">0.00 ₽</span>
+                        </div>
+                        <div class="summary-card-v2" style="padding: 15px;">
+                            <span class="m-label">Налог (13%)</span>
+                            <span class="m-value tax" id="ms-total-tax" style="font-size: 20px; margin-top: 5px;">0.00 ₽</span>
+                        </div>
+                        <div class="summary-card-v2" style="padding: 15px;">
+                            <span class="m-label">Итого чистыми</span>
+                            <span class="m-value small" id="ms-total-net" style="font-size: 20px; margin-top: 5px; color: var(--accent, #43c6b8);">0.00 ₽</span>
+                        </div>
+                    </div>
+
+                    <!-- Таблица 1: Основные работы -->
+                    <h3 style="margin-bottom: 10px; color: var(--text-main, #fff);">Основные работы</h3>
+                    <div class="history-card-v2" style="margin-bottom: 25px;">
+                        <div class="table-responsive">
+                            <table class="v2-table summary-grid-table">
+                                <colgroup>
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Категория</th>
+                                        <th>Тип работы</th>
+                                        <th>Кол-во</th>
+                                        <th>Сумма</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ms-table-body">
+                                    <!-- Данные заполняются через JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Таблица 2: Контейнеры -->
+                    <h3 style="margin-bottom: 10px; color: var(--text-main, #fff);">Контейнеры</h3>
+                    <div class="history-card-v2">
+                        <div class="table-responsive">
+                            <table class="v2-table summary-grid-table">
+                                <colgroup>
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Категория</th>
+                                        <th>Тип работы</th>
+                                        <th>Кол-во</th>
+                                        <th>Сумма</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ms-frames-table-body">
+                                    <!-- Данные контейнеров заполняются через JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </section>
         </main>
