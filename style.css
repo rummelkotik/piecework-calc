@@ -350,17 +350,25 @@ body {
     position: relative; 
 }
 
-/* Quick Add Form */
-.quick-add-card-v2 { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 14px; 
+/* Точечное скрытие лишнего инпута «Кол-во» (оставляем саму кнопку добавления нетронутой) */
+.quick-add-card-v2 > .m-label:last-of-type,
+.quick-add-card-v2 > input[type="number"]:last-of-type {
+    display: none !important;
 }
 
-.form-row { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 10px; 
+/* Растягивание кнопки добавления контейнеров на всю ширину */
+.quick-add-card-v2 button, 
+.quick-add-card-v2 .v2-primary-btn {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    padding: 12px 10px !important;
+    box-sizing: border-box !important;
+    margin-top: 10px !important;
 }
 
 .v2-select, .v2-input, select, input {
@@ -840,16 +848,26 @@ input[type="number"] {
     }
 
     .tab-bar {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        gap: 6px !important;
+        width: 100% !important;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-bar::-webkit-scrollbar {
+        display: none;
     }
 
     .tab-btn {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        padding: 8px 12px !important;
+        font-size: 13px !important;
         justify-content: center;
-        padding: 8px 6px;
-        font-size: 13px;
         text-align: center;
     }
 
@@ -966,7 +984,6 @@ input[type="number"] {
     text-overflow: ellipsis !important;
 }
 
-/* 1 колонка: Категория (ширина 25%, текст слева) */
 #monthly-summary-tab .v2-table th:nth-child(1), 
 #monthly-summary-tab .v2-table td:nth-child(1),
 .summary-grid-table th:nth-child(1), 
@@ -975,7 +992,6 @@ input[type="number"] {
     text-align: left !important; 
 }
 
-/* 2 колонка: Тип работы (ширина 35%, текст по центру) */
 #monthly-summary-tab .v2-table th:nth-child(2), 
 #monthly-summary-tab .v2-table td:nth-child(2),
 .summary-grid-table th:nth-child(2), 
@@ -984,7 +1000,6 @@ input[type="number"] {
     text-align: center !important; 
 }
 
-/* 3 колонка: Кол-во (ширина 20%, текст по центру) */
 #monthly-summary-tab .v2-table th:nth-child(3), 
 #monthly-summary-tab .v2-table td:nth-child(3),
 .summary-grid-table th:nth-child(3), 
@@ -993,21 +1008,10 @@ input[type="number"] {
     text-align: center !important; 
 }
 
-/* 4 колонка: Сумма (ширина 20%, текст справа) */
 #monthly-summary-tab .v2-table th:nth-child(4), 
 #monthly-summary-tab .v2-table td:nth-child(4),
 .summary-grid-table th:nth-child(4), 
 .summary-grid-table td:nth-child(4) { 
     width: 20% !important;
     text-align: right !important; 
-}
-
-/* Убираем линейную цель из блока сводки */
-.summary-card-v2 > .divider + div,
-.summary-card-v2 > .divider ~ div:not(:first-of-type),
-.summary-card-v2 .progress-bar-wrap,
-.summary-card-v2 .subtext,
-.summary-card-v2 .m-value:has(+ .subtext),
-.summary-card-v2 .m-label:has(~ .progress-bar-wrap) {
-    display: none !important;
 }
