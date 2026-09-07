@@ -67,7 +67,7 @@
                     <div class="dashboard-left">
                         <div class="top-cards-row">
                             <div class="summary-card-v2">
-                                <h3>Сводка</h3>
+                                <h2>Сводка</h2>
                                 <div class="metrics-grid">
                                     <div>
                                         <span class="m-label">Итого (до налогов)</span>
@@ -86,25 +86,13 @@
                                         <span class="m-value small" id="dash-containers-sum">0.00 ₽</span>
                                     </div>
                                 </div>
-                                <div class="divider"></div>
-                                <div class="v-header">
-                                    <span class="m-label">Цель по доходу</span>
-                                    <div class="progress-bar-wrap">
-                                        <div class="progress-bar" id="goal-progress" style="width: 0%"></div>
-                                    </div>
-                                </div>
-                                <div class="v-values">
-                                    <span class="m-value small" id="dash-goal-val">0 / 100,000 ₽</span>
-                                    <span class="subtext" id="dash-goal-percent">0%</span>
-                                </div>
-                            </div>
+                            </div>    
+                                
 
                             <div class="analytics-card-v2">
                                 <div class="analytics-header">
                                     <h3>Аналитика</h3>
-                                    <div class="sub-tabs">
-                                        <button class="sub-tab active">Заработки</button>
-                                    </div>
+                                    
                                 </div>
                                 <div class="bar-chart-container">
                                     <div class="chart-wrapper" id="chart-area"></div>
@@ -226,10 +214,6 @@
                             <!-- Рендерится через JS -->
                         </div>
                         <div class="form-row" style="align-items: center;">
-                            <div class="form-group" style="max-width: 120px;">
-                                <label>Кол-во</label>
-                                <input type="number" class="v2-input" id="container-work-qty" value="1" min="1">
-                            </div>
                             <button type="button" id="add-containers-btn" class="v2-primary-btn" style="align-self: flex-end; height: 38px;">+ Добавить контейнеры</button>
                         </div>
                     </div>

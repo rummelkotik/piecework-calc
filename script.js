@@ -240,7 +240,22 @@ function renderSummary() {
     if (containersSumEl) containersSumEl.textContent = totalContainersSum.toLocaleString('ru-RU') + ' ₽';
 
     renderCharts(year);
-    renderGoalChart(totalGross);
+
+    // Цель по доходу всегда считается строго за текущий выбранный месяц
+    const goalFilteredEntries = entries.filter(e => {
+        if (!e.date) return false;
+        const d = new Date(e.date);
+        return d.getMonth() === month && d.getFullYear() === year;
+    });
+
+    let goalGross = 0;
+    goalFilteredEntries.forEach(e => {
+        const s = findServiceById(e.service_id);
+        const price = e.price !== undefined ? e.price : (s ? s.price : 0);
+        goalGross += (e.quantity || 1) * price;
+    });
+
+    renderGoalChart(goalGross);
 }
 
 function renderGoalChart(grossAmount) {
