@@ -433,6 +433,7 @@ function renderGoalChart(gross) {
 
     setIfExists('goal-text-amount', `${gross.toLocaleString('ru-RU')} ₽ / ${safeTarget.toLocaleString('ru-RU')} ₽`);
     setIfExists('goal-text-percent', `${percentage}% выполнено`);
+    setIfExists('goal-percent-big', `${percentage}%`);
 
     if (goalChart) {
         goalChart.data.datasets[0].data = [gross, remaining];

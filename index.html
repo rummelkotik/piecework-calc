@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RatePiece</title>
+    <title>Учёт сдельной работы</title>
     <link rel="stylesheet" href="style.css">
     <script>
         (function () {
@@ -16,6 +16,12 @@
 </head>
 <body>
     <div id="app">
+
+        <!-- Мобильная верхняя панель -->
+        <header class="mobile-topbar">
+            <img src="logo.png" alt="Логотип" class="mobile-topbar-icon">
+            <span class="mobile-topbar-title">RatePiece</span>
+        </header>
 
         <!-- Боковая панель -->
         <aside class="sidebar">
@@ -133,6 +139,9 @@
                         </div>
                         <div class="goal-chart-wrap">
                             <canvas id="goalChart"></canvas>
+                            <div class="goal-percent-center">
+                                <span id="goal-percent-big">0%</span>
+                            </div>
                         </div>
                         <div class="goal-texts">
                             <div id="goal-text-amount" class="goal-amount">0.00 ₽ / 100 000 ₽</div>
