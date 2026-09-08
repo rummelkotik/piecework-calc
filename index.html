@@ -3,18 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Учёт сдельной работы</title>
+    <title>RatePiece</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            var saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<base target="_blank">
 </head>
 <body>
     <div id="app">
+
         <!-- Боковая панель -->
         <aside class="sidebar">
             <div class="logo">
                 <img src="logo.png" alt="Логотип" class="logo-icon">
                 <div class="logo-text-block">
-                    <span class="logo-title">Учёт</span>
-                    <span class="logo-subtitle">сдельной работы</span>
+                    <span class="logo-title">RatePiece</span>
+                    <span class="logo-subtitle">Твой сдельный заработок</span>
                 </div>
             </div>
 
@@ -25,34 +34,50 @@
                 </button>
                 <button class="tab-btn" data-tab="entries">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    Записи
+                    Добавление работы
                 </button>
-                <button class="tab-btn" data-tab="pricing">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    Расценки
+                <button class="tab-btn" data-tab="works">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                    Каталог работ
                 </button>
-                <button class="tab-btn" data-tab="monthly-summary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    Итог за месяц
+                <button class="tab-btn" data-tab="analytics">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    Аналитика
+                </button>
+                <button class="tab-btn" data-tab="settings">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Настройки
                 </button>
             </nav>
 
             <div class="sidebar-bottom">
-                <button class="sidebar-icon-btn" id="export-btn">📥 Экспорт CSV</button>
-                <button class="sidebar-icon-btn" id="import-btn">📤 Импорт JSON</button>
+                <div class="sidebar-card">
+                    <svg class="sidebar-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+                    </svg>
+                    <div class="sidebar-text">
+                        <span class="sidebar-title">Сколько сделал — столько и получил</span>
+                        <span class="sidebar-subtitle">(ну почти)</span>
+                    </div>
+                </div>
             </div>
         </aside>
 
-        <!-- Основной контент -->
+        <!-- Основной контент: ВСЕ вкладки внутри main -->
         <main class="main-content">
+
             <!-- Вкладка: Дашборд -->
             <section id="dashboard-tab" class="tab-content active">
                 <div class="dashboard-header">
-                    <h2>Дашборд</h2>
+                    <div>
+                        <h2>Дашборд</h2>
+                        <p class="header-subtitle">Общий обзор ваших показателей</p>
+                    </div>
                     <div class="header-controls">
                         <div class="date-picker-btn">
                             <span class="arrows" id="prev-period">◄</span>
-                            <span id="current-period-label">Сентябрь 2026</span>
+                            <span id="current-period-label">—</span>
                             <span class="arrows" id="next-period">►</span>
                         </div>
                         <div class="period-tabs">
@@ -63,284 +88,473 @@
                     </div>
                 </div>
 
-                <div class="dashboard-grid">
-                    <div class="dashboard-left">
-                        <div class="top-cards-row">
-                            <div class="summary-card-v2">
-                                <h2>Сводка</h2>
-                                <div class="metrics-grid">
-                                    <div>
-                                        <span class="m-label">Итого (до налогов)</span>
-                                        <span class="m-value" id="dash-gross">0.00 ₽</span>
-                                    </div>
-                                    <div>
-                                        <span class="m-label">Налог (13%)</span>
-                                        <span class="m-value tax" id="dash-tax">0.00 ₽</span>
-                                    </div>
-                                    <div>
-                                        <span class="m-label">Чистыми</span>
-                                        <span class="m-value small" id="dash-net">0.00 ₽</span>
-                                    </div>
-                                    <div>
-                                        <span class="m-label">Сумма контейнеров</span>
-                                        <span class="m-value small" id="dash-containers-sum">0.00 ₽</span>
-                                    </div>
-                                </div>
-                            </div>    
-                                
-
-                            <div class="analytics-card-v2">
-                                <div class="analytics-header">
-                                    <h3>Аналитика</h3>
-                                    
-                                </div>
-                                <div class="bar-chart-container">
-                                    <div class="chart-wrapper" id="chart-area"></div>
-                                </div>
-                            </div>
+                <!-- Сводка -->
+                <div class="card">
+                    <h3 class="card-heading">Сводка</h3>
+                    <div class="metrics-grid metrics-4">
+                        <div class="metric metric-cyan">
+                            <span class="m-label">Итого (до налогов)</span>
+                            <span class="m-value" id="dash-gross">0.00 ₽</span>
                         </div>
+                        <div class="metric metric-red">
+                            <span class="m-label">Налог</span>
+                            <span class="m-value" id="dash-tax">0.00 ₽</span>
+                        </div>
+                        <div class="metric metric-blue">
+                            <span class="m-label">Чистыми</span>
+                            <span class="m-value" id="dash-net">0.00 ₽</span>
+                        </div>
+                        <div class="metric metric-purple">
+                            <span class="m-label">Сумма контейнеров</span>
+                            <span class="m-value" id="dash-containers-sum">0.00 ₽</span>
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="history-card-v2">
-                            <div class="history-header">
-                                <h3>История записей</h3>
-                                <div class="history-actions">
-                                    <input type="text" id="search-input" class="search-input" placeholder="Поиск...">
-                                    <button class="v2-primary-btn small-btn" id="show-more-btn">Показать все</button>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="v2-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Дата</th>
-                                            <th>Категория</th>
-                                            <th>Тип работы</th>
-                                            <th>Кол-во</th>
-                                            <th>Сумма</th>
-                                            <th>Действие</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="history-table-body">
-                                        <!-- Данные загружаются через JS -->
-                                    </tbody>
-                                </table>
-                            </div>
+                <!-- Ряд: График и Цель -->
+                <div class="grid-2-340">
+                    <div class="card chart-card">
+                        <div class="card-head-row">
+                            <h3 class="card-heading">Аналитика</h3>
+                            <select class="v2-select small-select" id="chart-metric-select">
+                                <option value="earnings">Заработок</option>
+                                <option value="count">Количество</option>
+                            </select>
+                        </div>
+                        <div class="bar-chart-container">
+                            <canvas id="earningsChart"></canvas>
                         </div>
                     </div>
 
-                    <!-- Правая колонка с круговой диаграммой цели -->
-                    <div class="dashboard-right">
-                        <div class="history-card-v2" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
-                            <h3 style="margin-top: 0; margin-bottom: 15px; width: 100%; text-align: left;">Цель по доходу</h3>
-                            
-                            <div style="position: relative; width: 180px; height: 180px; margin: 10px 0 15px 0;">
-                                <canvas id="goalChart"></canvas>
-                            </div>
-                            
-                            <div style="text-align: center; width: 100%;">
-                                <div id="goal-text-amount" style="font-size: 16px; font-weight: bold; color: var(--text-main, #fff);">0,00 ₽ / 100 000,00 ₽</div>
-                                <div id="goal-text-percent" style="font-size: 13px; color: var(--text-muted, #6b8a90); margin-top: 4px;">0% выполнено</div>
-                            </div>
+                    <div class="card goal-card">
+                        <div>
+                            <h3 class="card-heading">Цель по доходу</h3>
+                            <span class="goal-sub">В этом месяце</span>
                         </div>
+                        <div class="goal-chart-wrap">
+                            <canvas id="goalChart"></canvas>
+                        </div>
+                        <div class="goal-texts">
+                            <div id="goal-text-amount" class="goal-amount">0.00 ₽ / 100 000 ₽</div>
+                            <div id="goal-text-percent" class="goal-percent">0% выполнено</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- История записей -->
+                <div class="card">
+                    <div class="card-head-row">
+                        <h3 class="card-heading">История записей</h3>
+                        <div class="history-actions">
+                            <input type="text" id="search-input" class="search-input" placeholder="Поиск...">
+                            <button type="button" class="link-btn" id="show-all-entries-btn">Все записи →</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="v2-table">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Категория</th>
+                                    <th>Тип работы</th>
+                                    <th>Кол-во</th>
+                                    <th>Сумма</th>
+                                    <th class="th-actions">Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body"></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
 
-            <!-- Вкладка: Записи (Календарь) -->
-            <section id="entries-tab" class="tab-content">
-                <div class="daily-container">
-                    
-                    <div class="calendar-section">
-                        <div class="calendar-header">
-                            <button id="cal-prev">◄</button>
-                            <span id="selected-date-title">Сентябрь 2026</span>
-                            <button id="cal-next">►</button>
-                        </div>
-                        <div class="calendar-grid" id="calendar-grid">
-                            <!-- Дни недели и даты рендерятся JS -->
-                        </div>
+            <!-- Вкладка: Добавление работы -->
+            <section id="entries" class="tab-content">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Добавление работы</h2>
+                        <p class="header-subtitle">Быстро и удобно добавляйте выполненные работы</p>
                     </div>
+                </div>
 
-                    <div class="quick-add-card-v2 add-form">
-                        <h3>Добавить из каталога</h3>
-                        <div class="form-row">
+                <div class="grid-2">
+                    <!-- Добавить из каталога -->
+                    <div class="card entry-form">
+                        <div class="form-body">
+                            <div class="form-title-row">
+                                <div class="icon-badge icon-cyan">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+                                </div>
+                                <h3 class="card-heading">Добавить из каталога</h3>
+                            </div>
+
                             <div class="form-group">
-                                <label>Категория</label>
-                                <select class="v2-select" id="cat-select">
-                                    <option value="">— Выбрать —</option>
+                                <label for="entry-date">Дата</label>
+                                <input type="date" id="entry-date" class="v2-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="cat-select">Категория</label>
+                                <select id="cat-select" class="v2-select">
+                                    <option value="" disabled selected>— Выбрать —</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Позиция</label>
-                                <select class="v2-select" id="pos-select">
-                                    <option value="">— Выбрать —</option>
+                                <label for="pos-select">Позиция</label>
+                                <select id="pos-select" class="v2-select">
+                                    <option value="" disabled selected>Выберите позицию</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Кол-во</label>
-                                <input type="number" class="v2-input" id="cat-work-qty" value="1" min="1">
-                            </div>
-                            <div class="form-group">
-                                <label>Цена (₽)</label>
-                                <input type="number" class="v2-input" id="cat-work-price" placeholder="0">
-                            </div>
-                        </div>
-                        <button type="button" id="add-from-catalog-btn" class="v2-primary-btn">+ Добавить в день</button>
 
-                        <h3 style="margin-top: 20px;">Единичная работа</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Название работы</label>
-                                <input type="text" class="v2-input" id="single-work-name" placeholder="Произвольная работа...">
+                            <input type="hidden" id="cat-work-price">
+
+                            <div class="form-row">
+                                <div class="form-group form-grow">
+                                    <label for="entry-qty">Количество</label>
+                                    <input type="number" id="entry-qty" class="v2-input" value="1" min="1">
+                                </div>
+                                <div class="unit-label" id="entry-unit-label">шт.</div>
                             </div>
-                            <div class="form-group">
-                                <label>Кол-во</label>
-                                <input type="number" class="v2-input" id="single-work-qty" value="1" min="1">
-                            </div>
-                            <div class="form-group">
-                                <label>Цена (₽)</label>
-                                <input type="number" class="v2-input" id="single-work-price" placeholder="0">
-                            </div>
+                            <div class="hint">✓ Цена автоматически из каталога</div>
                         </div>
-                        <button type="button" id="add-single-work-btn" class="v2-primary-btn">+ Добавить запись</button>
+
+                        <button type="button" id="add-from-catalog-btn" class="btn-primary">+ Добавить</button>
                     </div>
 
-                    <!-- Блок быстрого выбора контейнеров -->
-                    <div class="quick-add-card-v2 add-form">
-                        <h3>Быстрый выбор контейнеров на выбранный день</h3>
-                        <div class="checkbox-group" id="containers-checkboxes-list">
-                            <!-- Рендерится через JS -->
+                    <!-- Единичная работа -->
+                    <div class="card entry-form">
+                        <div class="form-body">
+                            <div class="form-title-row">
+                                <div class="icon-badge icon-blue">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                </div>
+                                <h3 class="card-heading">Единичная работа</h3>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="single-date">Дата</label>
+                                <input type="date" id="single-date" class="v2-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="single-name">Название работы</label>
+                                <input type="text" id="single-name" class="v2-input" placeholder="Например: Уборка комнаты">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group form-grow">
+                                    <label for="single-price">Цена</label>
+                                    <input type="number" id="single-price" class="v2-input" placeholder="0.00">
+                                </div>
+                                <div class="form-group form-sm">
+                                    <label for="single-currency">Валюта</label>
+                                    <select id="single-currency" class="v2-select">
+                                        <option value="RUB">₽</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group form-grow">
+                                    <label for="single-qty">Количество</label>
+                                    <input type="number" id="single-qty" class="v2-input" value="1" min="1">
+                                </div>
+                                <div class="unit-label" id="single-unit-label">шт.</div>
+                            </div>
                         </div>
-                        <div class="form-row" style="align-items: center;">
-                            <button type="button" id="add-containers-btn" class="v2-primary-btn" style="align-self: flex-end; height: 38px;">+ Добавить контейнеры</button>
+
+                        <button type="button" id="add-single-work-btn" class="btn-primary">+ Добавить</button>
+                    </div>
+                </div>
+
+                <!-- Быстрое добавление -->
+                <div class="card">
+                    <div class="form-title-row">
+                        <div class="icon-badge icon-amber">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="card-heading">Быстрое добавление</h3>
                         </div>
                     </div>
 
-                    <div class="day-entries">
-                        <h3>Записи за день</h3>
-                        <div id="day-entries-list"></div>
-                    </div>
+                    <div id="containers-checkboxes-list" class="quick-grid"></div>
+                </div>
 
+                <!-- Выполненные работы за день -->
+                <div class="day-entries">
+                    <div class="day-entries-header">
+                        <h3 class="day-entries-title">
+                            <span class="day-entries-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                                </svg>
+                            </span>
+                            <span>Выполненные работы за день</span>
+                        </h3>
+                        <span id="day-total-sum" class="day-total-sum">Итого: 0.00 ₽</span>
+                    </div>
+                    <div id="day-entries-list" class="day-entries-list">
+                        <div class="day-entries-empty">На этот день пока нет добавленных работ</div>
+                    </div>
                 </div>
             </section>
 
-            <!-- Вкладка: Расценки -->
-            <section id="pricing-tab" class="tab-content">
-                <div class="catalog-container">
-                    <div class="catalog-toolbar" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-                        <div style="display: flex; gap: 10px; flex: 1; min-width: 280px;">
-                            <input type="text" id="new-cat-input" class="v2-input" placeholder="Новая категория..." style="flex: 1;">
-                            <button class="v2-primary-btn small-btn" id="add-cat-btn">+ Категория</button>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="v2-primary-btn small-btn" id="save-catalog-btn">💾 Сохранить изменения</button>
-                            <button class="v2-primary-btn small-btn" id="reset-catalog-btn" style="background: #e06c75;">🔄 Сбросить</button>
-                        </div>
-                    </div>
-
-                    <input type="text" id="catalog-search" class="v2-input wide" placeholder="🔍 Поиск по позициям..." style="margin-bottom: 15px; width: 100%;">
-
-                    <div id="catalog-stats" style="color: var(--text-muted); margin-bottom: 15px; font-size: 14px;">
-                        Позиций: 0 | Категорий: 0
-                    </div>
-
-                    <div class="catalog-body" id="catalog-categories-container">
-                        <!-- Динамически рендерятся категории с позициями -->
+            <!-- Вкладка: Каталог работ -->
+            <section id="works" class="tab-content">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Каталог работ</h2>
+                        <p class="header-subtitle">Управление списком доступных работ по категориям</p>
                     </div>
                 </div>
+
+                <div class="card toolbar">
+                    <input type="text" id="catalog-search" class="toolbar-search" placeholder="🔍 Поиск по названию...">
+                    <div class="toolbar-add">
+                        <input type="text" id="new-cat-input" placeholder="Название новой категории...">
+                        <button type="button" id="add-cat-btn" class="btn-primary btn-nowrap">+ Категория</button>
+                    </div>
+                </div>
+
+                <div id="catalog-categories-container"></div>
             </section>
 
-            <!-- Вкладка 4: Итог за месяц -->
-            <section id="monthly-summary-tab" class="tab-content">
-                <div class="catalog-container">
-                    <div class="dashboard-header" style="margin-bottom: 20px;">
-                        <h2>Итог за месяц</h2>
-                        <div class="header-controls">
-                            <div class="date-picker-btn">
-                                <span class="arrows" id="ms-prev-month">◄</span>
-                                <span id="ms-period-label">Сентябрь 2026</span>
-                                <span class="arrows" id="ms-next-month">►</span>
+            <!-- Вкладка: Аналитика -->
+            <section id="analytics" class="tab-content">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Аналитика</h2>
+                        <p class="header-subtitle">Подробная статистика по вашим доходам и работе</p>
+                    </div>
+                    <div class="header-controls">
+                        <div class="date-picker-btn">
+                            <span class="arrows" id="analytics-prev-period">◄</span>
+                            <span id="analytics-period-label">—</span>
+                            <span class="arrows" id="analytics-next-period">►</span>
+                        </div>
+                        <div class="period-tabs">
+                            <button class="p-tab" data-analytics-period="day">День</button>
+                            <button class="p-tab active" data-analytics-period="month">Месяц</button>
+                            <button class="p-tab" data-analytics-period="year">Год</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Метрики -->
+                <div class="metrics-grid metrics-4">
+                    <div class="analytics-card">
+                        <span class="card-label">Общий доход</span>
+                        <span id="analytic-total-income" class="card-value">0.00 ₽</span>
+                        <span id="analytic-income-trend" class="card-trend">—</span>
+                    </div>
+                    <div class="analytics-card">
+                        <span class="card-label">Кол-во работ</span>
+                        <span id="analytic-total-count" class="card-value">0</span>
+                        <span id="analytic-count-trend" class="card-trend">—</span>
+                    </div>
+                    <div class="analytics-card">
+                        <span class="card-label">Средний заработок</span>
+                        <span id="analytic-avg-earnings" class="card-value">0.00 ₽</span>
+                        <span id="analytic-avg-trend" class="card-trend">—</span>
+                    </div>
+                    <div class="analytics-card">
+                        <span class="card-label">Самая прибыльная</span>
+                        <span id="analytic-top-work-name" class="card-top-name">—</span>
+                        <span id="analytic-top-work-sum" class="card-muted">0.00 ₽</span>
+                    </div>
+                </div>
+
+                <!-- Графики по дням и месяцам -->
+                <div class="analytics-row-charts">
+                    <div class="analytics-card">
+                        <h3 class="card-title">Доход по дням</h3>
+                        <div class="chart-container">
+                            <canvas id="analyticsDaysChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3 class="card-title">Доход по месяцам</h3>
+                        <div class="chart-container">
+                            <canvas id="analyticsMonthsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Круговая диаграмма и ключевые показатели -->
+                <div class="analytics-row-split">
+                    <div class="analytics-card">
+                        <h3 class="card-title">Доход по видам работ</h3>
+                        <div class="pie-wrapper">
+                            <div class="pie-container">
+                                <canvas id="analyticsPieChart"></canvas>
+                            </div>
+                            <div id="analytics-categories-legend" class="pie-legend"></div>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3 class="card-title">Ключевые показатели</h3>
+                        <div class="kp-list">
+                            <div class="kp-item">
+                                <div class="kp-icon kp-cyan">👤</div>
+                                <div>
+                                    <span class="card-label">Всего выполнено единиц</span>
+                                    <span id="kp-total-units" class="kp-val">0 шт.</span>
+                                </div>
+                            </div>
+                            <div class="kp-item">
+                                <div class="kp-icon kp-blue">📊</div>
+                                <div>
+                                    <span class="card-label">Средний заработок</span>
+                                    <span id="kp-avg-earnings" class="kp-val">0.00 ₽</span>
+                                </div>
+                            </div>
+                            <div class="kp-item">
+                                <div class="kp-icon kp-purple">⭐</div>
+                                <div>
+                                    <span class="card-label">Самая прибыльная работа</span>
+                                    <span id="kp-top-work" class="kp-val">—</span>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Сводные карточки итогов месяца -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
-                        <div class="summary-card-v2" style="padding: 15px;">
-                            <span class="m-label">Сумма за месяц</span>
-                            <span class="m-value" id="ms-total-gross" style="font-size: 20px; margin-top: 5px;">0.00 ₽</span>
-                        </div>
-                        <div class="summary-card-v2" style="padding: 15px;">
-                            <span class="m-label">Налог (13%)</span>
-                            <span class="m-value tax" id="ms-total-tax" style="font-size: 20px; margin-top: 5px;">0.00 ₽</span>
-                        </div>
-                        <div class="summary-card-v2" style="padding: 15px;">
-                            <span class="m-label">Итого чистыми</span>
-                            <span class="m-value small" id="ms-total-net" style="font-size: 20px; margin-top: 5px; color: var(--accent, #43c6b8);">0.00 ₽</span>
-                        </div>
-                    </div>
-
-                    <!-- Таблица 1: Основные работы -->
-                    <h3 style="margin-bottom: 10px; color: var(--text-main, #fff);">Основные работы</h3>
-                    <div class="history-card-v2" style="margin-bottom: 25px;">
+                <!-- Таблицы -->
+                <div class="tables-column">
+                    <div class="analytics-card">
+                        <h3 class="card-title">Основные работы</h3>
                         <div class="table-responsive">
                             <table class="v2-table summary-grid-table">
                                 <colgroup>
-                                    <col style="width: 25%;">
-                                    <col style="width: 25%;">
-                                    <col style="width: 25%;">
-                                    <col style="width: 25%;">
+                                    <col><col><col><col>
                                 </colgroup>
                                 <thead>
-                                    <tr>
+                                    <tr class="table-header-row">
                                         <th>Категория</th>
                                         <th>Тип работы</th>
                                         <th>Кол-во</th>
                                         <th>Сумма</th>
                                     </tr>
                                 </thead>
-                                <tbody id="ms-table-body">
-                                    <!-- Данные заполняются через JS -->
-                                </tbody>
+                                <tbody id="analytics-main-table-body"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- Таблица 2: Контейнеры -->
-                    <h3 style="margin-bottom: 10px; color: var(--text-main, #fff);">Контейнеры</h3>
-                    <div class="history-card-v2">
+                    <div class="analytics-card">
+                        <h3 class="card-title">Контейнеры</h3>
                         <div class="table-responsive">
                             <table class="v2-table summary-grid-table">
                                 <colgroup>
-                                    <col style="width: 25%;">
-                                    <col style="width: 25%;">
-                                    <col style="width: 25%;">
-                                    <col style="width: 25%;">
+                                    <col><col><col><col>
                                 </colgroup>
                                 <thead>
-                                    <tr>
+                                    <tr class="table-header-row">
                                         <th>Категория</th>
                                         <th>Тип работы</th>
                                         <th>Кол-во</th>
                                         <th>Сумма</th>
                                     </tr>
                                 </thead>
-                                <tbody id="ms-frames-table-body">
-                                    <!-- Данные контейнеров заполняются через JS -->
-                                </tbody>
+                                <tbody id="analytics-frames-table-body"></tbody>
                             </table>
                         </div>
                     </div>
-
                 </div>
             </section>
+
+            <!-- Вкладка: Настройки -->
+            <section id="settings" class="tab-content">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Настройки</h2>
+                        <p class="header-subtitle">Настройте приложение под себя</p>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 class="card-heading">Основные настройки</h3>
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div class="theme-toggle-row">
+                                    <div class="data-text">
+                                        <span class="data-title">Тёмная тема</span>
+                                        <span class="data-desc">Переключение оформления приложения</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="theme-toggle" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="target-income-input">Цель по доходу</label>
+                                <div class="input-suffix-wrap">
+                                    <input type="number" id="target-income-input" class="v2-input" min="0" step="1000">
+                                    <span class="input-suffix">₽</span>
+                                </div>
+                                <span class="field-hint">Всегда за текущий месяц</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="tax-rate-input">Налог</label>
+                                <div class="input-suffix-wrap">
+                                    <input type="number" id="tax-rate-input" class="v2-input" min="0" max="100" step="0.1">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+                            <button type="button" id="save-settings-btn" class="btn-primary">Сохранить настройки</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-heading">Данные</h3>
+                        <div class="data-rows">
+                            <div class="data-row">
+                                <div class="icon-badge icon-cyan">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                </div>
+                                <div class="data-text">
+                                    <span class="data-title">Экспорт данных</span>
+                                    <span class="data-desc">Скачать резервную копию</span>
+                                </div>
+                                <button type="button" id="export-btn" class="btn-primary btn-sm">Экспорт</button>
+                            </div>
+                            <div class="data-row">
+                                <div class="icon-badge icon-blue">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                </div>
+                                <div class="data-text">
+                                    <span class="data-title">Импорт данных</span>
+                                    <span class="data-desc">Загрузить из файла</span>
+                                </div>
+                                <button type="button" id="import-btn" class="btn-secondary btn-sm">Импорт</button>
+                            </div>
+                            <div class="data-row">
+                                <div class="icon-badge icon-danger">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                </div>
+                                <div class="data-text">
+                                    <span class="data-title">Сброс данных</span>
+                                    <span class="data-desc">Удалить все данные</span>
+                                </div>
+                                <button type="button" id="reset-btn" class="btn-danger btn-sm">Сброс</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card about-card">
+                    <div class="about-hero">
+                        <img src="logo.png" alt="RatePiece" class="about-logo">
+                        <h3 class="about-app-name">RatePiece</h3>
+                        <span class="about-version-badge">Версия 1.0.0</span>
+                        <p class="about-tagline">Сделано с <span class="about-heart">♥</span> для вашего удобства</p>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
 
-    <!-- Подключение Chart.js и основного скрипта -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
