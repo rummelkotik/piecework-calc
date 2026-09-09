@@ -280,6 +280,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const el = document.getElementById(id);
         if (el) el.value = today;
     }
+    for (const id of ['entry-qty', 'single-qty']) {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    }
 
     populateCategoryDropdowns();
     renderContainerCheckboxes();
@@ -610,6 +614,19 @@ function initEntriesEvents() {
         const priceInput = document.getElementById('cat-work-price');
         if (s && priceInput) priceInput.value = s.price;
     });
+
+    ['entry-date', 'single-date'].forEach((id) => {
+        document.getElementById(id)?.addEventListener('change', (e) => {
+            const newDate = e.target.value;
+            if (!newDate) return;
+            selectedDateStr = newDate;
+            for (const otherId of ['entry-date', 'single-date']) {
+                const el = document.getElementById(otherId);
+                if (el) el.value = newDate;
+            }
+            renderDayEntries();
+        });
+    });
 }
 
 function getValidServices() {
@@ -696,7 +713,8 @@ function addWorkFromCatalog() {
         return;
     }
     const s = findServiceById(posSelect.value);
-    const qty = Number(qtyInput?.value);
+    const qtyRaw = (qtyInput?.value || '').trim();
+    const qty = qtyRaw === '' ? 1 : Number(qtyRaw);
     if (!Number.isFinite(qty) || qty <= 0) {
         alert('Количество должно быть положительным числом.');
         return;
@@ -713,7 +731,7 @@ function addWorkFromCatalog() {
     });
     saveLocalBackup();
     scheduleRender('summary', 'history', 'day', 'analytics');
-    if (qtyInput) qtyInput.value = '1';
+    if (qtyInput) qtyInput.value = '';
 }
 
 function addSingleWork() {
@@ -727,7 +745,8 @@ function addSingleWork() {
         alert('Введите название работы');
         return;
     }
-    const qty = Number(qtyInput?.value);
+    const qtyRaw = (qtyInput?.value || '').trim();
+    const qty = qtyRaw === '' ? 1 : Number(qtyRaw);
     if (!Number.isFinite(qty) || qty <= 0) {
         alert('Количество должно быть положительным числом.');
         return;
@@ -746,7 +765,7 @@ function addSingleWork() {
     scheduleRender('summary', 'history', 'day', 'analytics');
 
     if (nameInput) nameInput.value = '';
-    if (qtyInput) qtyInput.value = '1';
+    if (qtyInput) qtyInput.value = '';
     if (priceInput) priceInput.value = '';
 }
 
