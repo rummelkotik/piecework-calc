@@ -43,7 +43,7 @@ const RESERVED_CATEGORY_NAME = 'контейнеры';
 const FIXED_CONTAINERS = [
     { id: 'fixed_container_3',       category: 'Контейнеры', name: 'контейнер на 3',            price: 3333, isFixed: true },
     { id: 'fixed_container_4',       category: 'Контейнеры', name: 'контейнер на 4',            price: 2500, isFixed: true },
-    { id: 'fixed_container_fenced',  category: 'Контейнеры', name: 'контейнер с ограждениями',  price: 3750, isFixed: true },
+    { id: 'fixed_container_fenced',  category: 'Контейнеры', name: 'контейнер с ограждениями',  price: 5000, isFixed: true },
     { id: 'fixed_container_tanks_3', category: 'Контейнеры', name: 'контейнер с баками на 3',   price: 2500, isFixed: true },
     { id: 'fixed_container_tanks_4', category: 'Контейнеры', name: 'контейнер с баками на 4',   price: 1750, isFixed: true },
 ];
